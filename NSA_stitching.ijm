@@ -45,19 +45,15 @@ macro "NSA_stitching" {
 	}
 
 	//count the number of wells
-	count=0;
 	nWells=1;
 	well=newArray(tiffFiles);
 	well0=substring(tiffArray[0],0,6);
 	for (i=0; i<tiffArray.length; i++) {
-		if (endsWith(list[i], "tif")) {
-			well[count]=substring(list[i],0,6);
-			well1=substring(list[i],0,6);
-			if (well1!=well0) {
-				nWells++;
-				well0=substring(list[i],0,6);
-			}
-			count++;
+		well[i]=substring(tiffArray[i],0,6);
+		well1=substring(tiffArray[i],0,6);
+		if (well1!=well0) {
+			nWells++;
+			well0=substring(tiffArray[i],0,6);
 		}
 	}
 
