@@ -69,7 +69,7 @@ File.makeDirectory(outputCorrected);
 setBatchMode(true);
 for (i=0; i<fieldsxwell; i++) {
 	name="stack_"+fields[i];
-	run("Image Sequence...", "open="+dir+" file=[(fld "+fields[i]+")] sort");
+	run("Image Sequence...", "open=["+dir+"] file=[(fld "+fields[i]+")] sort");
 	rename(name);
 	run("BaSiC ", "processing_stack="+name+" flat-field=None dark-field=None shading_estimation=[Estimate shading profiles] shading_model=[Estimate flat-field only (ignore dark-field)] setting_regularisationparametes=Automatic temporal_drift=Ignore correction_options=[Compute shading only] lambda_flat=0.50 lambda_dark=0.50");
 	selectWindow("Flat-field:"+name);
