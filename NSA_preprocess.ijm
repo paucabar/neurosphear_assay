@@ -1,6 +1,6 @@
 //script parameters
 #@ File(label="Directory", style="directory") dir
-#@ String(label="Illumination correction method", choices={"Retrospective multi-modal", "Prospective"}, style="radioButtonVertical") method
+#@ String(label="Shading correction method", choices={"Retrospective multi-modal", "Prospective"}, style="radioButtonVertical") method
 
 original=File.getName(dir);
 list=getFileList(dir);
@@ -65,20 +65,44 @@ if (method=="Prospective") {
 	dirFlatField=getDirectory("Select the flat-field Directory");
 }
 
-//create the output folder
+//create the output folders
 File.makeDirectory(outputFlatField);
 File.makeDirectory(outputCorrected);
 
 print("\\Clear");
 setBatchMode(true);
-for (i=0; i<fieldsxwell; i++) {
-	name="stack_"+fields[i];
-	run("Image Sequence...", "open=["+dir+"] file=[(fld "+fields[i]+")] sort");
-	rename(name);
-	run("BaSiC ", "processing_stack="+name+" flat-field=None dark-field=None shading_estimation=[Estimate shading profiles] shading_model=[Estimate flat-field only (ignore dark-field)] setting_regularisationparametes=Automatic temporal_drift=Ignore correction_options=[Compute shading only] lambda_flat=0.50 lambda_dark=0.50");
-	selectWindow("Flat-field:"+name);
-	saveAs("tif", outputFlatField+File.separator+"flat-field_"+fields[i]);
-	run("Close All");
+
+//generate flat-field refernce images
+if (method=="Retrospective multi-modal") {
+	for (i=0; i<fieldsxwell; i++) {
+		name="stack_"+fields[i];
+		print("Generating", name, "flat-field reference images");
+		run("Image Sequence...", "open=["+dir+"] file=[(fld "+fields[i]+")] sort");
+		rename(name);
+		run("BaSiC ", "processing_stack="+name+" flat-field=None dark-field=None shading_estimation=[Estimate shading profiles] shading_model=[Estimate flat-field only (ignore dark-field)] setting_regularisationparametes=Automatic temporal_drift=Ignore correction_options=[Compute shading only] lambda_flat=0.50 lambda_dark=0.50");
+		selectWindow("Flat-field:"+name);
+		saveAs("tif", outputFlatField+File.separator+"flat-field_"+fields[i]);
+		run("Close All");
+	}
 }
+
+//shading correction
+for (i=0; i<nWells; i++) {
+	for (j=0; j<fieldsxwell;j++) {
+		fieldOfWiewImage=wellName[i]+"(fld "+fields[j]+")";
+		flatFieldImage="flat-field_"+fields[j];
+		print(fieldOfWiewImage, "shading correction");
+		open(dir+File.separator+fieldOfWiewImage+".tif");
+		if (method=="Retrospective multi-modal") {
+			open(outputFlatField+File.separator+"flat-field_"+fields[j]+".tif");
+		} else {
+			open(dirFlatField+File.separator+flatFieldImage+".tif");
+		}
+		imageCalculator("Divide create", fieldOfWiewImage+".tif", flatFieldImage+".tif");
+		saveAs("tif", outputCorrected+File.separator+fieldOfWiewImage);
+		run("Close All");
+	}
+}
+print("SHADING CORRECTION PERFORMED SUCCESSFULLY");
 
 setBatchMode(false);
