@@ -1,9 +1,7 @@
 //script parameters
 #@ File(label="Directory", style="directory") dir
-#@ String (visibility=MESSAGE, value="Enter a postfix to tag the output folder") msg
-//#@ String (label="Postfix") postfix
+#@ String(label="Illumination correction method", choices={"Retrospective multi-modal", "Prospective"}, style="radioButtonVertical") method
 
-print("\\Clear");
 original=File.getName(dir);
 list=getFileList(dir);
 Array.sort(list);
@@ -62,10 +60,16 @@ for (i=0; i<fieldsxwell; i++) {
 	fields[i]=fieldNumber;
 }
 
+//Prospective method needs reference images
+if (method=="Prospective") {
+	dirFlatField=getDirectory("Select the flat-field Directory");
+}
+
 //create the output folder
 File.makeDirectory(outputFlatField);
 File.makeDirectory(outputCorrected);
 
+print("\\Clear");
 setBatchMode(true);
 for (i=0; i<fieldsxwell; i++) {
 	name="stack_"+fields[i];
