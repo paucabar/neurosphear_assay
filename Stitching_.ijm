@@ -62,7 +62,10 @@ for (i=0; i<fieldsxwell; i++) {
 
 //create the output folders
 File.makeDirectory(outputMerged);
-File.makeDirectory(outputStitched);
+probStitchingOutput=outputStitched+File.separator+"Pixel_Prediction_Map"
+rawStitchingOutput=outputStitched+File.separator+"Raw_Data";
+File.makeDirectory(probStitchingOutput);
+File.makeDirectory(rawStitchingOutput);
 
 print("\\Clear");
 setBatchMode(true);
@@ -88,10 +91,10 @@ for (i=0; i<nWells; i++) {
 	run("Split Channels");
 	selectWindow("C1-Fused");
 	run("Grays");
-	saveAs("tif", outputStitched+File.separator+wellName[i]+"_probabilities");
+	saveAs("tif", rawStitchingOutput+File.separator+wellName[i]+"_probabilities");
 	selectWindow("C2-Fused");
 	run("Grays");
-	saveAs("tif", outputStitched+File.separator+wellName[i]);
+	saveAs("tif", probStitchingOutput+File.separator+wellName[i]);
 	run("Close All");
 }
 print("STITCHING PERFORMED SUCCESSFULLY");
