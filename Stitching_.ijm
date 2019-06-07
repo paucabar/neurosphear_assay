@@ -62,7 +62,7 @@ for (i=0; i<fieldsxwell; i++) {
 
 //create the output folders
 File.makeDirectory(outputMerged);
-probStitchingOutput=outputStitched+File.separator+"Pixel_Prediction_Map"
+probStitchingOutput=outputStitched+File.separator+"Pixel_Prediction_Map";
 rawStitchingOutput=outputStitched+File.separator+"Raw_Data";
 File.makeDirectory(probStitchingOutput);
 File.makeDirectory(rawStitchingOutput);
