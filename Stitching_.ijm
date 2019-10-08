@@ -9,44 +9,44 @@ Array.sort(list);
 outputMerged=File.getParent(dir)+File.separator+original+"_merged";
 outputStitched=File.getParent(dir)+File.separator+original+"_stitched";
 
-//check if the folder contains tif files
-tifFiles=0;
+//check if the folder contains h5 files
+h5Files=0;
 for (i=0; i<list.length; i++) {
-	if (endsWith(list[i], "tif")==true) {
-		tifFiles++;
+	if (endsWith(list[i], "h5")==true) {
+		h5Files++;
 	}
 }
 
 //error message
-if (tifFiles==0) {
-	exit("No tif files found in "+original);
+if (h5Files==0) {
+	exit("No h5 files found in "+original);
 }
 
 //create a an array containing only the names of the tif files in the folder
-tifArray=newArray(tifFiles);
+h5Array=newArray(h5Files);
 count=0;
 for (i=0; i<list.length; i++) {
-	if (endsWith(list[i], "tif")) {
-		tifArray[count]=list[i];
+	if (endsWith(list[i], "h5")) {
+		h5Array[count]=list[i];
 		count++;
 	}
 }
 
 //count the number of wells
 nWells=1;
-well=newArray(tifFiles);
-well0=substring(tifArray[0],0,6);
-for (i=0; i<tifFiles; i++) {
-	well[i]=substring(tifArray[i],0,6);
-	well1=substring(tifArray[i],0,6);
+well=newArray(h5Files);
+well0=substring(h5Array[0],0,6);
+for (i=0; i<h5Files; i++) {
+	well[i]=substring(h5Array[i],0,6);
+	well1=substring(h5Array[i],0,6);
 	if (well1!=well0) {
 		nWells++;
-		well0=substring(tifArray[i],0,6);
+		well0=substring(h5Array[i],0,6);
 	}
 }
 
 wellName=newArray(nWells);
-fieldsxwell = (tifFiles/nWells);
+fieldsxwell = (h5Files/nWells);
 
 for (i=0; i<nWells; i++) {
 	wellName[i]=well[i*fieldsxwell];
@@ -70,17 +70,20 @@ File.makeDirectory(probStitchingOutput);
 File.makeDirectory(rawStitchingOutput);
 
 print("\\Clear");
-setBatchMode(true);
+//setBatchMode(true);
 
 //merge channels
 for (i=0; i<nWells; i++) {
 	for (j=0; j<fieldsxwell;j++) {
 		fieldOfWiewImage=wellName[i]+"(fld "+fields[j]+")";
 		print(fieldOfWiewImage, "merging channels");
-		open(dir+File.separator+fieldOfWiewImage+".tif");
-		open(dir+File.separator+fieldOfWiewImage+"_Probabilities_1.tiff");
+		run("Import HDF5", "select=["+dir+File.separator+fieldOfWiewImage+".h5] datasetname=[/data: (1, 1, 2048, 2048, 1) uint16] axisorder=tzyxc");
+		rename(fieldOfWiewImage);
+		run("Run Pixel Classification Prediction", "saveonly=false projectfilename=["+project+"] inputimage=["+fieldOfWiewImage+"] chosenoutputtype=Probabilities");
+		rename("probabilities");
+		run("Duplicate...", "title=probabilities_neurospheres duplicate channels=2");
 		run("16-bit");
-		run("Merge Channels...", "c2=["+fieldOfWiewImage+"_Probabilities_1.tiff] c4=["+fieldOfWiewImage+".tif] create");
+		run("Merge Channels...", "c2=[probabilities_neurospheres] c4=["+fieldOfWiewImage+"] create");
 		saveAs("tif", outputMerged+File.separator+"merge_"+fieldOfWiewImage);
 		run("Close All");
 	}
