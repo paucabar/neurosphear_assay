@@ -1,5 +1,6 @@
 //script parameters
 #@ File(label="Directory", style="directory") dir
+#@ File(label="Pixel Classification", description="Enter an ilastik project (ilp) file", style="extensions:ilp") project
 #@ String(label="Type", choices={"Grid: row-by-row", "Grid: column-by-column", "Grid: snake by rows", "Grid: snake by columns"}, style="radioButtonVertical") type
 
 original=File.getName(dir);

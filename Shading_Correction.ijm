@@ -99,7 +99,8 @@ for (i=0; i<nWells; i++) {
 			open(dirFlatField+File.separator+flatFieldImage+".tif");
 		}
 		imageCalculator("Divide create", fieldOfWiewImage+".tif", flatFieldImage+".tif");
-		saveAs("tif", outputCorrected+File.separator+fieldOfWiewImage);
+		rename("corrected");
+		run("Export HDF5", "select=["+outputCorrected+File.separator+fieldOfWiewImage+".h5] exportpath=["+outputCorrected+File.separator+fieldOfWiewImage+".h5] datasetname=data compressionlevel=0 input=[corrected]");
 		run("Close All");
 	}
 }
