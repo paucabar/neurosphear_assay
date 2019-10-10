@@ -102,6 +102,14 @@ for (i=0; i<nWells; i++) {
 	saveAs("tif", rawStitchingOutput+File.separator+wellName[i]+"_probabilities");
 	run("Close All");
 }
+
+//delete merged directory
+listMerged=getFileList(outputMerged);
+for (i=0; i<listMerged.length; i++) {
+	File.delete(outputMerged+File.separator+listMerged[i]);
+}
+File.delete(outputMerged);
+
 print("STITCHING PERFORMED SUCCESSFULLY");
 
 setBatchMode(false);
