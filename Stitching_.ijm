@@ -82,13 +82,17 @@ for (i=0; i<nWells; i++) {
 		rename("probabilities");
 		run("Duplicate...", "title=probabilities_neurospheres duplicate channels=2");
 		run("16-bit");
-		run("Merge Channels...", "c2=[probabilities_neurospheres] c4=["+fieldOfWiewImage+"] create");
+		selectImage("probabilities");
+		run("Duplicate...", "title=probabilities_background duplicate channels=1");
+		run("16-bit");
+		run("Merge Channels...", "c1=[probabilities_background] c2=[probabilities_neurospheres] c4=["+fieldOfWiewImage+"] create");
 		saveAs("tif", outputMerged+File.separator+"merge_"+fieldOfWiewImage);
 		run("Close All");
 	}
 }
 print("MERGE CHANNELS PERFORMED SUCCESSFULLY");
 
+//stitching
 setBatchMode(true);
 for (i=0; i<nWells; i++) {
 	print(wellName[i], "stitching");
@@ -96,10 +100,13 @@ for (i=0; i<nWells; i++) {
 	run("Split Channels");
 	selectWindow("C1-Fused");
 	run("Grays");
-	saveAs("tif", probStitchingOutput+File.separator+wellName[i]);
+	saveAs("tif", probStitchingOutput+File.separator+wellName[i]+"_probabilities_bg");
 	selectWindow("C2-Fused");
 	run("Grays");
-	saveAs("tif", rawStitchingOutput+File.separator+wellName[i]+"_probabilities");
+	saveAs("tif", probStitchingOutput+File.separator+wellName[i]+"_probabilities");
+	selectWindow("C3-Fused");
+	run("Grays");
+	saveAs("tif", rawStitchingOutput+File.separator+wellName[i]);
 	run("Close All");
 }
 
@@ -111,5 +118,4 @@ for (i=0; i<listMerged.length; i++) {
 File.delete(outputMerged);
 
 print("STITCHING PERFORMED SUCCESSFULLY");
-
 setBatchMode(false);
