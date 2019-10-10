@@ -70,7 +70,6 @@ File.makeDirectory(probStitchingOutput);
 File.makeDirectory(rawStitchingOutput);
 
 print("\\Clear");
-//setBatchMode(true);
 
 //merge channels
 for (i=0; i<nWells; i++) {
@@ -90,16 +89,17 @@ for (i=0; i<nWells; i++) {
 }
 print("MERGE CHANNELS PERFORMED SUCCESSFULLY");
 
+setBatchMode(true);
 for (i=0; i<nWells; i++) {
 	print(wellName[i], "stitching");
 	run("Grid/Collection stitching", "type=["+type+"] order=[Right & Down                ] grid_size_x=5 grid_size_y=5 tile_overlap=15 first_file_index_i=1 directory=["+outputMerged+"] file_names=[merge_"+wellName[i]+"(fld {ii}).tif] output_textfile_name=TileConfiguration.txt fusion_method=[Linear Blending] regression_threshold=0.30 max/avg_displacement_threshold=2.50 absolute_displacement_threshold=3.50 compute_overlap computation_parameters=[Save memory (but be slower)] image_output=[Fuse and display]");
 	run("Split Channels");
 	selectWindow("C1-Fused");
 	run("Grays");
-	saveAs("tif", rawStitchingOutput+File.separator+wellName[i]);
+	saveAs("tif", probStitchingOutput+File.separator+wellName[i]);
 	selectWindow("C2-Fused");
 	run("Grays");
-	saveAs("tif", probStitchingOutput+File.separator+wellName[i]+"_probabilities");
+	saveAs("tif", rawStitchingOutput+File.separator+wellName[i]+"_probabilities");
 	run("Close All");
 }
 print("STITCHING PERFORMED SUCCESSFULLY");
