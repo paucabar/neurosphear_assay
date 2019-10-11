@@ -107,6 +107,51 @@ for (i=0; i<nWells; i++) {
 	selectWindow("C3-Fused");
 	run("Grays");
 	saveAs("tif", rawStitchingOutput+File.separator+wellName[i]);
+
+	//neurospheres processing
+	selectImage(wellName[i]+"_probabilities.tif");
+	run("Median...", "radius=15");
+	setThreshold(65536*0.5, 65536);
+	run("Convert to Mask");
+	run("Fill Holes");
+	run("Options...", "iterations=10 count=1 do=Open");
+	run("Watershed");
+	run("Analyze Particles...", "size=1000-Infinity show=Masks");
+	rename("mask1");
+
+	//well processing
+	selectImage(wellName[i]+"_probabilities_bg.tif");
+	run("Median...", "radius=15");
+	setThreshold(65536*0.5, 65536);
+	run("Convert to Mask");
+	run("Analyze Particles...", "size=10000000-Infinity show=Masks");
+	run("Fill Holes");
+	run("Options...", "iterations=100 count=1 do=Close");
+	run("Create Selection");
+	run("Fit Circle");
+	run("Create Mask");
+	rename("well");
+	run("Options...", "iterations=20 count=1 do=Erode");
+
+	//binary reconstruct
+	run("BinaryReconstruct ", "mask=mask1 seed=well create white");
+	
+	//measure
+	run("Set Measurements...", "area perimeter shape feret's display redirect=["+wellName[i]+".tif] decimal=2");
+	run("Analyze Particles...", "size=0-Infinity show=Masks display add");
+	roiManager("Save", rawStitchingOutput+File.separator+wellName[i]+"_roi.zip");
+	roiManager("deselect");
+	roiManager("delete");
+	run("Select None");
+	
+	//save
+	roiCount=roiManager("count");
+	for (j=0; j<roiCount; j++) {
+		roiManager("select", j);
+		roiManager("rename", j+1);
+	}
+	
+	//clean up
 	run("Close All");
 }
 
