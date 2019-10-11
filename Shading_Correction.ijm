@@ -92,7 +92,25 @@ for (i=0; i<nWells; i++) {
 		fieldOfWiewImage=wellName[i]+"(fld "+fields[j]+")";
 		flatFieldImage="flat-field_"+fields[j];
 		print(fieldOfWiewImage, "shading correction");
+		
+		//open raw image
 		open(dir+File.separator+fieldOfWiewImage+".tif");
+		
+		//get image scale
+		if (i==0 && j==0) {
+			getVoxelSize(widthGbl, heightGbl, depthGbl, unitGbl);
+			title1 = "Scale";
+			title2 = "["+title1+"]";
+			f = title2;
+			run("Table...", "name="+title2+" width=650 height=500");
+			print(f, "distance" + "\t" + widthGbl);
+			print(f, "unit" + "\t" + unitGbl);
+			saveAs("Text", outputCorrected+File.separator+"Scale.csv");
+			selectWindow(title1);
+			run("Close");
+		}
+
+		//open flat-field image
 		if (method=="Retrospective multi-modal") {
 			open(outputFlatField+File.separator+"flat-field_"+fields[j]+".tif");
 		} else {
