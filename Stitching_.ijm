@@ -92,8 +92,8 @@ for (i=0; i<nWells; i++) {
 }
 print("MERGE CHANNELS PERFORMED SUCCESSFULLY");
 
-//stitching
 setBatchMode(true);
+//stitching
 for (i=0; i<nWells; i++) {
 	print(wellName[i], "stitching");
 	run("Grid/Collection stitching", "type=["+type+"] order=[Right & Down                ] grid_size_x=5 grid_size_y=5 tile_overlap=15 first_file_index_i=1 directory=["+outputMerged+"] file_names=[merge_"+wellName[i]+"(fld {ii}).tif] output_textfile_name=TileConfiguration.txt fusion_method=[Linear Blending] regression_threshold=0.30 max/avg_displacement_threshold=2.50 absolute_displacement_threshold=3.50 compute_overlap computation_parameters=[Save memory (but be slower)] image_output=[Fuse and display]");
@@ -137,7 +137,7 @@ for (i=0; i<nWells; i++) {
 	run("BinaryReconstruct ", "mask=mask1 seed=well create white");
 	
 	//measure
-	run("Set Measurements...", "area perimeter shape feret's display redirect=["+wellName[i]+".tif] decimal=2");
+	run("Set Measurements...", "area perimeter shape feret's display redirect=None decimal=2");
 	run("Analyze Particles...", "size=0-Infinity show=Masks display add");
 	roiManager("Save", rawStitchingOutput+File.separator+wellName[i]+"_roi.zip");
 	roiManager("deselect");
@@ -150,9 +150,12 @@ for (i=0; i<nWells; i++) {
 		roiManager("select", j);
 		roiManager("rename", j+1);
 	}
+	selectWindow("Results");
+	saveAs("Results"+, rawStitchingOutput+File.separator+"Results_"+wellName[i]+".csv");
 	
 	//clean up
 	run("Close All");
+	run("Clear Results");
 }
 
 //delete merged directory
