@@ -22,6 +22,27 @@ if (h5Files==0) {
 	exit("No h5 files found in "+original);
 }
 
+//check if the folder contains the scale file
+scaleBoolean=false;
+for (i=0; i<list.length; i++) {
+	if (list[i] == "Scale.csv") {
+		scaleBoolean=true;
+	}
+}
+
+//error message
+if (scaleBoolean==false) {
+	exit("No Scale.csv files found in "+original);
+}
+
+//get scale
+scaleString=File.openAsString(dir+File.separator+"Scale.csv");
+linesScale=split(scaleString, "\n");
+columnsScaleDistance=split(linesScale[0],",,");
+columnsScaleUnit=split(linesScale[1],",,");
+distance=columnsScaleDistance[1];
+unit=columnsScaleUnit[1];
+
 //create a an array containing only the names of the tif files in the folder
 h5Array=newArray(h5Files);
 count=0;
@@ -100,12 +121,15 @@ for (i=0; i<nWells; i++) {
 	run("Split Channels");
 	selectWindow("C1-Fused");
 	run("Grays");
+	run("Set Scale...", "distance="+1/distance+" known=1 pixel=1 unit="+unit);
 	saveAs("tif", probStitchingOutput+File.separator+wellName[i]+"_probabilities_bg");
 	selectWindow("C2-Fused");
 	run("Grays");
+	run("Set Scale...", "distance="+1/distance+" known=1 pixel=1 unit="+unit);
 	saveAs("tif", probStitchingOutput+File.separator+wellName[i]+"_probabilities");
 	selectWindow("C3-Fused");
 	run("Grays");
+	run("Set Scale...", "distance="+1/distance+" known=1 pixel=1 unit="+unit);
 	saveAs("tif", rawStitchingOutput+File.separator+wellName[i]);
 
 	//neurospheres processing
