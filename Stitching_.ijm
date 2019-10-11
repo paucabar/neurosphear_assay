@@ -151,7 +151,7 @@ for (i=0; i<nWells; i++) {
 		roiManager("rename", j+1);
 	}
 	selectWindow("Results");
-	saveAs("Results"+, rawStitchingOutput+File.separator+"Results_"+wellName[i]+".csv");
+	saveAs("Results", rawStitchingOutput+File.separator+"Results_"+wellName[i]+".csv");
 	
 	//clean up
 	run("Close All");
