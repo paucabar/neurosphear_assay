@@ -134,11 +134,11 @@ for (i=0; i<nWells; i++) {
 
 	//neurospheres processing
 	selectImage(wellName[i]+"_probabilities.tif");
-	run("Median...", "radius=15");
-	setThreshold(65536*0.5, 65536);
+	run("Mean...", "radius=1");
+	setThreshold(65536*0.25, 65536);
 	run("Convert to Mask");
 	run("Fill Holes");
-	run("Options...", "iterations=10 count=1 do=Open");
+	run("Options...", "iterations=5 count=1 do=Close");
 	run("Watershed");
 	run("Analyze Particles...", "size=1000-Infinity show=Masks");
 	rename("mask1");
@@ -155,7 +155,7 @@ for (i=0; i<nWells; i++) {
 	run("Fit Circle");
 	run("Create Mask");
 	rename("well");
-	run("Options...", "iterations=20 count=1 do=Erode");
+	run("Options...", "iterations=25 count=1 do=Erode");
 
 	//binary reconstruct
 	run("BinaryReconstruct ", "mask=mask1 seed=well create white");
