@@ -135,7 +135,7 @@ for (i=0; i<nWells; i++) {
 	//neurospheres processing
 	selectImage(wellName[i]+"_probabilities.tif");
 	run("Mean...", "radius=1");
-	setThreshold(65536*0.25, 65536);
+	setThreshold(65536*0.35, 65536);
 	run("Convert to Mask");
 	run("Fill Holes");
 	run("Options...", "iterations=5 count=1 do=Close");
@@ -161,7 +161,7 @@ for (i=0; i<nWells; i++) {
 	run("BinaryReconstruct ", "mask=mask1 seed=well create white");
 	
 	//measure
-	run("Set Measurements...", "area perimeter shape feret's display redirect=None decimal=2");
+	run("Set Measurements...", "area mean modal centroid perimeter shape feret's integrated display redirect=["+wellName[i]+".tif] decimal=2");
 	run("Analyze Particles...", "size=0-Infinity show=Masks display add");
 	roiManager("Save", rawStitchingOutput+File.separator+wellName[i]+"_roi.zip");
 	roiManager("deselect");
