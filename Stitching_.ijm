@@ -159,9 +159,12 @@ for (i=0; i<nWells; i++) {
 
 	//binary reconstruct
 	run("BinaryReconstruct ", "mask=mask1 seed=well create white");
+	rename("Final_mask");
 	
 	//measure
-	run("Set Measurements...", "area mean modal centroid perimeter shape feret's integrated display redirect=["+wellName[i]+".tif] decimal=2");
+	run("Set Measurements...", "area mean modal centroid perimeter shape feret's integrated redirect=None decimal=2");
+	selectImage("Final_mask");
+	run("Set Scale...", "distance="+1/distance+" known=1 pixel=1 unit="+unit);
 	run("Analyze Particles...", "size=0-Infinity show=Masks display add");
 	roiManager("Save", rawStitchingOutput+File.separator+wellName[i]+"_roi.zip");
 	roiManager("deselect");
