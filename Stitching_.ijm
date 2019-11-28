@@ -2,7 +2,10 @@
 #@ File(label="Directory", style="directory") dir
 #@ File(label="Pixel Classification", description="Enter an ilastik project (ilp) file", style="extensions:ilp") project
 #@ String(label="Type", choices={"Grid: row-by-row", "Grid: column-by-column", "Grid: snake by rows", "Grid: snake by columns"}, style="radioButtonVertical") type
+#@ Integer (label="Mean filter (radius)", value=2, persist=false) mean
+#@ Integer (label="Threshold (%)", value=50, max=100, min=0, style="slider") threshold
 
+threshold/=100;
 original=File.getName(dir);
 list=getFileList(dir);
 Array.sort(list);
@@ -145,14 +148,12 @@ for (i=0; i<nWells; i++) {
 
 	//well processing
 	selectImage(wellName[i]+"_probabilities_bg.tif");
-	run("Median...", "radius=15");
-	setThreshold(65536*0.5, 65536);
+	run("Median...", "radius="+mean);
+	setThreshold(65536*threshold, 65536);
 	run("Convert to Mask");
 	run("Analyze Particles...", "size=10000000-Infinity show=Masks");
-	run("Fill Holes");
-	run("Options...", "iterations=100 count=1 do=Close");
 	run("Create Selection");
-	run("Fit Circle");
+	run("Convex Hull");
 	run("Create Mask");
 	rename("well");
 	run("Options...", "iterations=25 count=1 do=Erode");
