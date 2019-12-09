@@ -3,6 +3,7 @@
 #@ File(label="Pixel Classification", description="Enter an ilastik project (ilp) file", style="extensions:ilp") project
 #@ String(label="Type", choices={"Grid: row-by-row", "Grid: column-by-column", "Grid: snake by rows", "Grid: snake by columns"}, style="radioButtonVertical") type
 #@ Integer (label="Mean filter (radius)", value=2, persist=false) mean
+#@ Integer (label="Open (iterations)", value=5, persist=false) iterOpen
 #@ Integer (label="Threshold (%)", value=50, max=100, min=0, style="slider") threshold
 
 threshold/=100;
@@ -137,19 +138,19 @@ for (i=0; i<nWells; i++) {
 
 	//neurospheres processing
 	selectImage(wellName[i]+"_probabilities.tif");
-	run("Mean...", "radius=1");
-	setThreshold(65536*0.35, 65536);
+	run("Mean...", "radius="+mean);
+	setThreshold(65536*threshold, 65536);
 	run("Convert to Mask");
 	run("Fill Holes");
-	run("Options...", "iterations=5 count=1 do=Close");
-	run("Watershed");
+	run("Options...", "iterations="+iterOpen+" count=1 do=Open");
+	//run("Watershed");
 	run("Analyze Particles...", "size=1000-Infinity show=Masks");
 	rename("mask1");
 
 	//well processing
 	selectImage(wellName[i]+"_probabilities_bg.tif");
-	run("Median...", "radius="+mean);
-	setThreshold(65536*threshold, 65536);
+	run("Median...", "radius=15");
+	setThreshold(65536*0.5, 65536);
 	run("Convert to Mask");
 	run("Analyze Particles...", "size=10000000-Infinity show=Masks");
 	run("Create Selection");
