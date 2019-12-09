@@ -1,6 +1,8 @@
 //script parameters
 #@ File(label="Directory", style="directory") dir
-#@ String(label="Shading correction method", choices={"Retrospective multi-modal", "Prospective"}, style="radioButtonVertical") method
+#@ String(label="Method", choices={"Retrospective multi-modal", "Prospective"}, style="radioButtonVertical") method
+#@ String (label=" ", value="<html><img src=\"https://live.staticflickr.com/65535/48557333566_d2a51be746_o.png\"></html>", visibility=MESSAGE, persist=false) logo
+#@ String (label=" ", value="<html><font size=2><b>Neuromolecular Biology Laboratory</b><br>ERI BIOTECMED - Universitat de València (Spain)</font></html>", visibility=MESSAGE, persist=false) message
 
 original=File.getName(dir);
 list=getFileList(dir);
