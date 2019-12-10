@@ -196,5 +196,10 @@ for (i=0; i<listMerged.length; i++) {
 }
 File.delete(outputMerged);
 
+//final clean up
 print("STITCHING PERFORMED SUCCESSFULLY");
+selectWindow("Results");
+run("Close");
+selectWindow("ROI Manager");
+run("Close");
 setBatchMode(false);
