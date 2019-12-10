@@ -161,15 +161,19 @@ for (i=0; i<nWells; i++) {
 	rename("well");
 	run("Options...", "iterations=25 count=1 do=Erode");
 
-	//binary reconstruct
+	//binary reconstruct & classify particles
 	run("BinaryReconstruct ", "mask=mask1 seed=well create white");
+	rename("Reconstructed_mask");
+	run("Set Measurements...", "shape stack redirect=None decimal=2");
+	run("Analyze Particles...", "display clear record");
+	run("Classify Particles", "class[1]=AR operator[1]=<= value[1]=1.5 class[2]=Solidity operator[2]=>= value[2]=0.9 class[3]=Circ. operator[3]=>= value[3]=0.8 class[4]=-empty- operator[4]=-empty- value[4]=0.0000 combine=[AND (match all)] output=[Keep members] white");
 	rename("Final_mask");
 	
 	//measure
 	run("Set Measurements...", "area mean modal centroid perimeter shape feret's integrated redirect=None decimal=2");
 	selectImage("Final_mask");
 	run("Set Scale...", "distance="+1/distance+" known=1 pixel=1 unit="+unit);
-	run("Analyze Particles...", "size=0-Infinity show=Masks display add");
+	run("Analyze Particles...", "size=0-Infinity show=Masks display add clear");
 	roiManager("Save", rawStitchingOutput+File.separator+wellName[i]+"_roi.zip");
 	roiManager("deselect");
 	roiManager("delete");
