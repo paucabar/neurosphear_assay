@@ -2,8 +2,8 @@
 #@ File(label="Directory", style="directory") dir
 #@ File(label="Pixel Classification", description="Enter an ilastik project (ilp) file", style="extensions:ilp") project
 #@ String(label="Type", choices={"Grid: row-by-row", "Grid: column-by-column", "Grid: snake by rows", "Grid: snake by columns"}, style="radioButtonVertical") type
-#@ Integer (label="Mean filter (radius)", value=2, persist=false) mean
-#@ Integer (label="Open (iterations)", value=5, persist=false) iterOpen
+#@ Integer (label="Mean filter (radius)", value=2) mean
+#@ Integer (label="Open (iterations)", value=15) iterOpen
 #@ Integer (label="Threshold (%)", value=50, max=100, min=0, style="slider") threshold
 #@ String (label=" ", value="<html><img src=\"https://live.staticflickr.com/65535/48557333566_d2a51be746_o.png\"></html>", visibility=MESSAGE, persist=false) logo
 #@ String (label=" ", value="<html><font size=2><b>Neuromolecular Biology Laboratory</b><br>ERI BIOTECMED - Universitat de València (Spain)</font></html>", visibility=MESSAGE, persist=false) message
@@ -161,7 +161,7 @@ for (i=0; i<nWells; i++) {
 	rename("well");
 	run("Options...", "iterations=25 count=1 do=Erode");
 
-	//binary reconstruct & classify particles
+	//binary reconstruct and classify particles
 	run("BinaryReconstruct ", "mask=mask1 seed=well create white");
 	rename("Reconstructed_mask");
 	run("Set Measurements...", "shape stack redirect=None decimal=2");
