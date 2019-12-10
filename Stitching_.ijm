@@ -161,7 +161,7 @@ for (i=0; i<nWells; i++) {
 	rename("well");
 	run("Options...", "iterations=25 count=1 do=Erode");
 
-	//binary reconstruct and classify particles
+	//binary reconstruct
 	run("BinaryReconstruct ", "mask=mask1 seed=well create white");
 	rename("Reconstructed_mask");
 	run("Set Measurements...", "shape stack redirect=None decimal=2");
