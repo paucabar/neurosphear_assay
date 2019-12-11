@@ -119,6 +119,13 @@ for (i=0; i<nWells; i++) {
 }
 print("MERGE CHANNELS PERFORMED SUCCESSFULLY");
 
+//create results table
+title1 = "Project_Results_Table";
+title2 = "["+title1+"]";
+f = title2;
+run("Table...", "name="+title2+" width=500 height=500");
+print(f, "\\Headings:Well\tObject\tArea\tCirc.\tAR\tRound\tSolidity\tX\tY");
+
 setBatchMode(true);
 //stitching
 for (i=0; i<nWells; i++) {
@@ -170,7 +177,7 @@ for (i=0; i<nWells; i++) {
 	rename("Final_mask");
 	
 	//measure
-	run("Set Measurements...", "area mean modal centroid perimeter shape feret's integrated redirect=None decimal=2");
+	run("Set Measurements...", "area centroid shape redirect=None decimal=2");
 	selectImage("Final_mask");
 	run("Set Scale...", "distance="+1/distance+" known=1 pixel=1 unit="+unit);
 	run("Analyze Particles...", "size=0-Infinity show=Masks display add clear");
@@ -178,6 +185,25 @@ for (i=0; i<nWells; i++) {
 	roiManager("deselect");
 	roiManager("delete");
 	run("Select None");
+
+	//store results
+	areaArray=newArray(nResults);
+	circArray=newArray(nResults);
+	arArray=newArray(nResults);
+	roundArray=newArray(nResults);
+	solidityArray=newArray(nResults);
+	xArray=newArray(nResults);
+	yArray=newArray(nResults);
+	for (j=0; j<areaArray.length; j++) {
+		areaArray[j]=getResult("Area", j);
+		circArray[j]=getResult("Circ.", j);
+		arArray[j]=getResult("AR", j);
+		roundArray[j]=getResult("Round", j);
+		solidityArray[j]=getResult("Solidity", j);
+		xArray[j]=getResult("X", j);
+		yArray[j]=getResult("Y", j);
+		print(f, wellName[i] + "\t" + j+1 + "\t" + areaArray[j] + "\t" + circArray[j] + "\t" + arArray[j] + "\t" + roundArray[j] + "\t" + solidityArray[j] + "\t" + xArray[j] + "\t" +yArray[j]);
+	}
 	
 	//save
 	roiCount=roiManager("count");
@@ -185,8 +211,8 @@ for (i=0; i<nWells; i++) {
 		roiManager("select", j);
 		roiManager("rename", j+1);
 	}
-	selectWindow("Results");
-	saveAs("Results", rawStitchingOutput+File.separator+"Results_"+wellName[i]+".csv");
+	//selectWindow("Results");
+	//saveAs("Results", rawStitchingOutput+File.separator+"Results_"+wellName[i]+".csv");
 	
 	//clean up
 	run("Close All");
@@ -199,6 +225,11 @@ for (i=0; i<listMerged.length; i++) {
 	File.delete(outputMerged+File.separator+listMerged[i]);
 }
 File.delete(outputMerged);
+
+//save results table
+selectWindow("Project_Results_Table");
+saveAs("Text", rawStitchingOutput+File.separator+"Project_Results_Table.csv");
+run("Close");
 
 //final clean up
 print("STITCHING PERFORMED SUCCESSFULLY");
