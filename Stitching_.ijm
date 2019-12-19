@@ -105,7 +105,7 @@ for (i=0; i<nWells; i++) {
 		print(fieldOfWiewImage, "merging channels");
 		run("Import HDF5", "select=["+dir+File.separator+fieldOfWiewImage+".h5] datasetname=[/data: (1, 1, 2048, 2048, 1) uint16] axisorder=tzyxc");
 		rename(fieldOfWiewImage);
-		run("Run Pixel Classification Prediction", "saveonly=false projectfilename=["+project+"] inputimage=["+fieldOfWiewImage+"] chosenoutputtype=Probabilities");
+		run("Run Pixel Classification Prediction", "projectfilename=["+project+"] inputimage=["+fieldOfWiewImage+"] pixelclassificationtype=Probabilities");
 		rename("probabilities");
 		run("Duplicate...", "title=probabilities_neurospheres duplicate channels=2");
 		run("16-bit");
