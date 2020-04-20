@@ -12,14 +12,14 @@
 * _ilastik_ update site (Fiji)
 * _Morphology_ update site (Fiji)
 
-How to [follow an update site](https://imagej.net/Following_an_update_site) in Fiji (_see Figure 1_)
+How to [follow an update site](https://imagej.net/Following_an_update_site) in Fiji
 
 ## Installation
 
 1. Start Fiji
 2. Start the **ImageJ Updater** (<code>Help > Update...</code>)
 3. Click on <code>Manage update sites</code>
-4. Click on <code>Add update site</code> (_see Figure 1_)
+4. Click on <code>Add update site</code>
 5. A new blank row is to be created at the bottom of the update sites list
 6. Type **NeuroMol Lab** in the **Name** column
 7. Type **http://sites.imagej.net/Paucabar/** in the **URL** column
@@ -27,10 +27,6 @@ How to [follow an update site](https://imagej.net/Following_an_update_site) in F
 9. <code>Apply changes</code>
 10. Restart Fiji
 11. Check if <code>NeuroMol Lab</code> appears now in the <code>Plugins</code> dropdown menu (note that it will be placed at the bottom of the dropdown menu)
-
-![Snag_29e5797f](https://user-images.githubusercontent.com/39589980/58595799-27f8a500-8272-11e9-8c32-1c72b591c702.png)
-
-**Figure 1.** _Manage update sites_ window. An update site is a web space used by the _ImageJ Updater_ which enables users to share their macros, scripts and plugins. By adding an update site the macros, scripts and plugins maintained there will be installed and updated just like core ImageJ plugins.
 
 ## Test Dataset
 
