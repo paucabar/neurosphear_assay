@@ -2,6 +2,7 @@
 #@ File(label="Directory", style="directory") dir
 #@ File(label="Pixel Classification", description="Enter an ilastik project (ilp) file", style="extensions:ilp") project
 #@ String(label="Type", choices={"Grid: row-by-row", "Grid: column-by-column", "Grid: snake by rows", "Grid: snake by columns"}, style="radioButtonVertical") type
+#@ Integer (label="Tile overlap (%)", value=15) overlap
 #@ Integer (label="Mean filter (radius)", value=2) mean
 #@ Integer (label="Open (iterations)", value=15) iterOpen
 #@ Float (label="Threshold (%)", value=0.35, max=1, min=0, stepSize=0.01, style="slider", persist=false) threshold
@@ -103,7 +104,7 @@ for (i=0; i<nWells; i++) {
 	for (j=0; j<fieldsxwell;j++) {
 		fieldOfWiewImage=wellName[i]+"(fld "+fields[j]+")";
 		print(fieldOfWiewImage, "merging channels");
-		run("Import HDF5", "select=["+dir+File.separator+fieldOfWiewImage+".h5] datasetname=[/data: (1, 1, 2048, 2048, 1) uint16] axisorder=tzyxc");
+		run("Import HDF5", "select=["+dir+File.separator+fieldOfWiewImage+".h5] datasetname=[/data] axisorder=tzyxc");
 		rename(fieldOfWiewImage);
 		run("Run Pixel Classification Prediction", "projectfilename=["+project+"] inputimage=["+fieldOfWiewImage+"] pixelclassificationtype=Probabilities");
 		rename("probabilities");
@@ -130,7 +131,7 @@ setBatchMode(true);
 //stitching
 for (i=0; i<nWells; i++) {
 	print(wellName[i], "stitching");
-	run("Grid/Collection stitching", "type=["+type+"] order=[Right & Down                ] grid_size_x=5 grid_size_y=5 tile_overlap=15 first_file_index_i=1 directory=["+outputMerged+"] file_names=[merge_"+wellName[i]+"(fld {ii}).tif] output_textfile_name=TileConfiguration.txt fusion_method=[Linear Blending] regression_threshold=0.30 max/avg_displacement_threshold=2.50 absolute_displacement_threshold=3.50 compute_overlap computation_parameters=[Save memory (but be slower)] image_output=[Fuse and display]");
+	run("Grid/Collection stitching", "type=["+type+"] order=[Right & Down                ] grid_size_x=5 grid_size_y=5 tile_overlap="+overlap+" first_file_index_i=1 directory=["+outputMerged+"] file_names=[merge_"+wellName[i]+"(fld {ii}).tif] output_textfile_name=TileConfiguration.txt fusion_method=[Linear Blending] regression_threshold=0.30 max/avg_displacement_threshold=2.50 absolute_displacement_threshold=3.50 compute_overlap computation_parameters=[Save memory (but be slower)] image_output=[Fuse and display]");
 	run("Split Channels");
 	selectWindow("C1-Fused");
 	run("Grays");
