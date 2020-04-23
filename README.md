@@ -11,6 +11,7 @@
 * _BaSiC_ update site (Fiji)
 * _ilastik_ update site (Fiji)
 * _Morphology_ update site (Fiji)
+* Image dataset following an IN Cell Analyzer file naming convention (note that the NeuroMol update site includes a [macroinstruction](https://github.com/paucabar/other_macros) to turn data acquired with diferent high content microscopes into an IN Cell Analyzer file naming convention dataset)
 
 How to [follow an update site](https://imagej.net/Following_an_update_site) in Fiji
 
@@ -68,3 +69,5 @@ Learn more about the ilastik [pixel classification workflow](https://www.ilastik
 [Pau Carrillo-Barberà](https://github.com/paucabar)
 
 ## License
+
+Neurosphere Assay in licensed under [MIT](https://imagej.net/MIT)
