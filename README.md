@@ -9,7 +9,7 @@
 * [Fiji](https://fiji.sc/)
 * [ilastik](https://www.ilastik.org/)
 * _BaSiC_ update site (Fiji)
-* _ilastik_ update site (Fiji)
+* _ilastik_ update site (Fiji). Once added, it is important to configure the ilastik executable location within the Fiji's plugin.
 * _Morphology_ update site (Fiji)
 * Image dataset following an IN Cell Analyzer file naming convention (note that the NeuroMol update site includes a [macroinstruction](https://github.com/paucabar/other_macros) to turn data acquired with diferent high content microscopes into an IN Cell Analyzer file naming convention dataset)
 
