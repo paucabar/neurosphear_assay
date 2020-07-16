@@ -31,7 +31,7 @@ How to [follow an update site](https://imagej.net/Following_an_update_site) in F
 
 ## Test Dataset
 
-Download an example [image dataset](https://drive.google.com/drive/folders/1W_UDxg4mbQ1qNeZo1tPUezNgmZxtMwkv?usp=sharing) and a [provided training](https://drive.google.com/drive/folders/1B0eZLaN3c9mcKkUnkeS5lguu4byKxT2b?usp=sharing) for ilastik pixel classification.
+Download an example [image dataset](https://drive.google.com/drive/folders/1W_UDxg4mbQ1qNeZo1tPUezNgmZxtMwkv?usp=sharing) and a [trained classifier](https://drive.google.com/drive/folders/1mgT7NOzUn5zvgJp47WbMRDCNR9f6efXg?usp=sharing) for ilastik pixel classification.
 
 ## Usage
 
