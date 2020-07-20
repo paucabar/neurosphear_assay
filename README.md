@@ -7,7 +7,7 @@
 ## Requirements
 
 * [Fiji](https://fiji.sc/)
-* [ilastik](https://www.ilastik.org/)
+* [ilastik](https://www.ilastik.org/) 1.3.3
 * _BaSiC_ update site (Fiji)
 * _ilastik_ update site (Fiji). Once added, it is important to configure the ilastik executable location within the Fiji's plugin.
 * _Morphology_ update site (Fiji)
@@ -46,10 +46,11 @@ Download an example [image dataset](https://drive.google.com/drive/folders/1W_UD
 ### Pixel Classification (ilastik)
 
 1. Start a pixel classification project in ilastik
-2. Load some corrected images (.HDF5 files). Try to use images with different features and from several wells
+2. Load some corrected images (.HDF5 files). Try to use images with different appearence, from several field-of-view positions and wells
 3. Select some features (you can start by selecting all of them)
 4. Annotate the images. Note that label 1 must correspond to _background_, label 2 to _neurospheres_ and label 3 to _well edges_
-5. Once the classifier performs fine, save the project
+5. Once the classifier performs fine, set up the prediction export applet: i) set _Probabilities_ at the souce drop-down menu; ii) check _Renormalize_ (from 0 to 1)
+6. Save the project
 
 Learn more about the ilastik [pixel classification workflow](https://www.ilastik.org/documentation/pixelclassification/pixelclassification)
 
@@ -59,10 +60,9 @@ Learn more about the ilastik [pixel classification workflow](https://www.ilastik
 2. Select the directory containing the images (.tif files)
 3. Load the pixel classification project
 4. Select the stitching mode. Note that it depends on the image acquisition parameters. Also note that the macro assumes an overlapping of 15 %
-5. Adjust some workflow parameters (mean, open, threshold). Know more about the parameters of the workflow on the **wiki page (not yet)**
-6. Adjust the parameters. Know more about the parameters of the workflow on the **wiki page (not yet)**
-7. Run. Note that the stitching workflow may take several hours, depending on the dataset size
-8. A series of new files will be saved within different directories: stitched well (.tif) files, a results table (.csv) file and the ROI (.zip) files of each well
+5. Adjust some workflow parameters (mean, threshold, open iterations). Know more about the parameters of the workflow on the **wiki page (not yet)**
+6. Run. Note that the stitching workflow may take several hours, depending on the dataset size
+7. A series of new files will be saved within different directories: stitched well (.tif) files, a results table (.csv) file and the ROI (.zip) files of each well
 
 ## Contributors
 
