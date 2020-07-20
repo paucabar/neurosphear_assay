@@ -4,12 +4,17 @@
 #@ String(label="Type", choices={"Grid: row-by-row", "Grid: column-by-column", "Grid: snake by rows", "Grid: snake by columns"}, style="radioButtonVertical") type
 #@ Integer (label="Tile overlap (%)", value=15) overlap
 #@ Integer (label="Mean filter (radius)", value=2) mean
-#@ Integer (label="Open (iterations)", value=15) iterOpen
 #@ Float (label="Threshold (%)", value=0.35, max=1, min=0, stepSize=0.01, style="slider", persist=false) threshold
+#@ Integer (label="Open (iterations)", value=15) iterOpen
 #@ String (label=" ", value="<html><img src=\"https://live.staticflickr.com/65535/48557333566_d2a51be746_o.png\"></html>", visibility=MESSAGE, persist=false) logo
 #@ String (label=" ", value="<html><font size=2><b>Neuromolecular Biology Laboratory</b><br>ERI BIOTECMED - Universitat de València (Spain)</font></html>", visibility=MESSAGE, persist=false) message
 
-threshold/=100;
+roiManager("reset");
+setOption("BlackBackground", false);
+setOption("ScaleConversions", true);
+print("\\Clear");
+run("Clear Results");
+close("*");
 original=File.getName(dir);
 list=getFileList(dir);
 Array.sort(list);
@@ -109,10 +114,13 @@ for (i=0; i<nWells; i++) {
 		run("Run Pixel Classification Prediction", "projectfilename=["+project+"] inputimage=["+fieldOfWiewImage+"] pixelclassificationtype=Probabilities");
 		rename("probabilities");
 		run("Duplicate...", "title=probabilities_neurospheres duplicate channels=2");
-		run("16-bit");
+		//run("16-bit");
 		selectImage("probabilities");
 		run("Duplicate...", "title=probabilities_background duplicate channels=1");
-		run("16-bit");
+		//run("16-bit");
+		selectImage(fieldOfWiewImage);
+		run("32-bit");
+		run("Enhance Contrast...", "saturated=0.3 normalize");
 		run("Merge Channels...", "c1=[probabilities_background] c2=[probabilities_neurospheres] c4=["+fieldOfWiewImage+"] create");
 		saveAs("tif", outputMerged+File.separator+"merge_"+fieldOfWiewImage);
 		run("Close All");
@@ -148,8 +156,10 @@ for (i=0; i<nWells; i++) {
 
 	//neurospheres processing
 	selectImage(wellName[i]+"_probabilities.tif");
+	//run("32-bit");
+	//run("Enhance Contrast...", "saturated=0.3 normalize");
 	run("Mean...", "radius="+mean);
-	setThreshold(65536*threshold, 65536);
+	setThreshold(threshold, 1);
 	run("Convert to Mask");
 	run("Fill Holes");
 	run("Options...", "iterations="+iterOpen+" count=1 do=Open");
@@ -159,8 +169,10 @@ for (i=0; i<nWells; i++) {
 
 	//well processing
 	selectImage(wellName[i]+"_probabilities_bg.tif");
+	//run("32-bit");
+	//run("Enhance Contrast...", "saturated=0.3 normalize");
 	run("Median...", "radius=15");
-	setThreshold(65536*0.5, 65536);
+	setThreshold(0.5, 1);
 	run("Convert to Mask");
 	run("Analyze Particles...", "size=10000000-Infinity show=Masks");
 	run("Create Selection");
@@ -172,14 +184,14 @@ for (i=0; i<nWells; i++) {
 	//binary reconstruct
 	run("BinaryReconstruct ", "mask=mask1 seed=well create white");
 	rename("Reconstructed_mask");
-	run("Set Measurements...", "shape stack redirect=None decimal=2");
-	run("Analyze Particles...", "display clear record");
-	run("Classify Particles", "class[1]=AR operator[1]=<= value[1]=1.5 class[2]=Solidity operator[2]=>= value[2]=0.9 class[3]=Circ. operator[3]=>= value[3]=0.8 class[4]=-empty- operator[4]=-empty- value[4]=0.0000 combine=[AND (match all)] output=[Keep members] white");
-	rename("Final_mask");
+	//run("Set Measurements...", "shape stack redirect=None decimal=2");
+	//run("Analyze Particles...", "display clear record");
+	//run("Classify Particles", "class[1]=AR operator[1]=<= value[1]=1.5 class[2]=Solidity operator[2]=>= value[2]=0.9 class[3]=Circ. operator[3]=>= value[3]=0.8 class[4]=-empty- operator[4]=-empty- value[4]=0.0000 combine=[AND (match all)] output=[Keep members] white");
+	//rename("Final_mask");
 	
 	//measure
 	run("Set Measurements...", "area centroid shape redirect=None decimal=2");
-	selectImage("Final_mask");
+	//selectImage("Final_mask");
 	run("Set Scale...", "distance="+1/distance+" known=1 pixel=1 unit="+unit);
 	run("Analyze Particles...", "size=0-Infinity show=Masks display add clear");
 	roiManager("Save", rawStitchingOutput+File.separator+wellName[i]+"_roi.zip");
@@ -233,9 +245,9 @@ saveAs("Text", rawStitchingOutput+File.separator+"Project_Results_Table.csv");
 run("Close");
 
 //final clean up
+print("\\Clear");
 print("STITCHING PERFORMED SUCCESSFULLY");
 selectWindow("Results");
 run("Close");
-selectWindow("ROI Manager");
-run("Close");
+roiManager("reset");
 setBatchMode(false);
