@@ -138,12 +138,28 @@ if (checkSelection == 0) {
 	exit("There is no well selected");
 }
 
+// time variables
+total_fields=checkSelection*fieldsxwell;
+count_print=0;
+start_PixClas=getTime();
+
 //pixel classification
+print("Pixel Classification");
 for (i=0; i<nWells; i++) {
 	if (fileCheckbox[i]) {
 		for (j=0; j<fieldsxwell;j++) {
 			fieldOfWiewImage=wellName[i]+"(fld "+fields[j]+")";
-			print(fieldOfWiewImage, "Pixel Classification");
+			// log timing
+			print("\\Update1:"+ fieldOfWiewImage + "     " + count_print+1+"/"+total_fields);
+			if (count_print == 0) {
+				print("\\Update2:Estimating time...");
+			} else {
+				elapsed=round((getTime()-start_PixClas)/1000);
+				expected=elapsed/(count_print)*total_fields;
+				print("\\Update2:Elapsed time "+hours_minutes_seconds(elapsed));
+				print("\\Update3:Estimated time "+hours_minutes_seconds(expected));
+			}
+			count_print++;
 			// ilastik's pixel classification
 			run("Import HDF5", "select=["+dir+File.separator+fieldOfWiewImage+".h5] datasetname=[/data] axisorder=tzyxc");
 			rename(fieldOfWiewImage);
@@ -163,21 +179,43 @@ for (i=0; i<nWells; i++) {
 		}
 	}
 }
-print("Pixel Classification performed successfully");
+elapsed_PixClas=round((getTime()-start_PixClas)/1000);
+print("\\Update0:Pixel Classification performed successfully");
+print("\\Update1:Elapsed time "+hours_minutes_seconds(elapsed_PixClas));
+print("\\Update2:");
+print("\\Update3:");
 
-//create results table
+// create results table
 title1 = "Project_Results_Table";
 title2 = "["+title1+"]";
 f = title2;
 run("Table...", "name="+title2+" width=500 height=500");
 print(f, "\\Headings:Well\tObject\tArea\tCirc.\tAR\tRound\tSolidity\tX\tY");
 
+// time variables
+count_print=0;
+start_Stitching=getTime();
+
+// stitching
+print("\\Clear");
+print("Stitching");
 setBatchMode(true);
-//stitching
 for (i=0; i<nWells; i++) {
 	if (fileCheckbox[i]) {
-		print(wellName[i], "stitching");
+		// log timing
+		print("\\Update0:Stitching");
+		print("\\Update1:"+ wellName[i] + "     " + count_print+1+"/"+checkSelection);
+		if (count_print == 0) {
+			print("\\Update2:Estimating time...");
+		} else {
+			elapsed=round((getTime()-start_Stitching)/1000);
+			expected=elapsed/(count_print)*total_fields;
+			print("\\Update2:Elapsed time "+hours_minutes_seconds(elapsed));
+			print("\\Update3:Estimated time "+hours_minutes_seconds(expected));
+		}
+		count_print++;
 		run("Grid/Collection stitching", "type=["+type+"] order=[Right & Down                ] grid_size_x=5 grid_size_y=5 tile_overlap="+overlap+" first_file_index_i=1 directory=["+outputMerged+"] file_names=[merge_"+wellName[i]+"(fld {ii}).tif] output_textfile_name=TileConfiguration.txt fusion_method=[Linear Blending] regression_threshold=0.30 max/avg_displacement_threshold=2.50 absolute_displacement_threshold=3.50 compute_overlap computation_parameters=[Save memory (but be slower)] image_output=[Fuse and display]");
+		print("\\Clear");
 		run("Split Channels");
 		selectWindow("C1-Fused");
 		run("Grays");
@@ -193,9 +231,8 @@ for (i=0; i<nWells; i++) {
 		saveAs("tif", rawStitchingOutput+File.separator+wellName[i]);
 	
 		//neurospheres processing
+		print("Segmentation");
 		selectImage(wellName[i]+"_probabilities.tif");
-		//run("32-bit");
-		//run("Enhance Contrast...", "saturated=0.3 normalize");
 		run("Mean...", "radius="+mean);
 		setThreshold(threshold, 1);
 		run("Convert to Mask");
@@ -207,8 +244,6 @@ for (i=0; i<nWells; i++) {
 	
 		//well processing
 		selectImage(wellName[i]+"_probabilities_bg.tif");
-		//run("32-bit");
-		//run("Enhance Contrast...", "saturated=0.3 normalize");
 		run("Median...", "radius=15");
 		setThreshold(0.5, 1);
 		run("Convert to Mask");
@@ -228,6 +263,7 @@ for (i=0; i<nWells; i++) {
 		//rename("Final_mask");
 		
 		//measure
+		print("Quantification");
 		run("Set Measurements...", "area centroid shape redirect=None decimal=2");
 		//selectImage("Final_mask");
 		run("Set Scale...", "distance="+1/distance+" known=1 pixel=1 unit="+unit);
@@ -262,8 +298,6 @@ for (i=0; i<nWells; i++) {
 			roiManager("select", j);
 			roiManager("rename", j+1);
 		}
-		//selectWindow("Results");
-		//saveAs("Results", rawStitchingOutput+File.separator+"Results_"+wellName[i]+".csv");
 		
 		//clean up
 		run("Close All");
@@ -271,7 +305,14 @@ for (i=0; i<nWells; i++) {
 	}
 }
 
+elapsed_Stitching=round((getTime()-start_Stitching)/1000);
+print("\\Update0:Stitching performed successfully");
+print("\\Update1:Elapsed time "+hours_minutes_seconds(elapsed_Stitching));
+print("\\Update2:");
+print("\\Update3:");
+
 //delete merged directory
+print("\\Update3:Deleting temporary files");
 listMerged=getFileList(outputMerged);
 for (i=0; i<listMerged.length; i++) {
 	File.delete(outputMerged+File.separator+listMerged[i]);
@@ -279,14 +320,40 @@ for (i=0; i<listMerged.length; i++) {
 File.delete(outputMerged);
 
 //save results table
+print("\\Update3:Saving results");
 selectWindow("Project_Results_Table");
-saveAs("Text", rawStitchingOutput+File.separator+"Project_Results_Table.csv");
+saveAs("Text", rawStitchingOutput+File.separator+"Project_Results_Table_cambiar.csv");
 run("Close");
 
 //final clean up
 print("\\Clear");
-print("STITCHING PERFORMED SUCCESSFULLY");
+print("Stitching performed successfully");
 selectWindow("Results");
 run("Close");
 roiManager("reset");
 setBatchMode(false);
+
+elapsed_total=elapsed_PixClas+elapsed_Stitching;
+print("\\Clear");
+print("End of process");
+print("Pixel Classification elapsed time "+hours_minutes_seconds(elapsed_PixClas));
+print("Stitching elapsed time "+hours_minutes_seconds(elapsed_Stitching));
+print("Total elapsed time "+hours_minutes_seconds(elapsed_total));
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function hours_minutes_seconds(seconds) {
+	hours=seconds/3600;
+	hours_floor=floor(hours);
+	remaining_seconds=seconds-(hours_floor*3600);
+	remaining_minutes=remaining_seconds/60;
+	minutes_floor=floor(remaining_minutes);
+	remaining_seconds=remaining_seconds-(minutes_floor*60);
+	hours_floor=d2s(hours_floor, 0);
+	minutes_floor=d2s(minutes_floor, 0);
+	remaining_seconds=d2s(remaining_seconds, 0);
+	if (lengthOf(hours_floor) < 2) hours_floor="0"+hours_floor;
+	if (lengthOf(minutes_floor) < 2) minutes_floor="0"+minutes_floor;
+	if (lengthOf(remaining_seconds) < 2) remaining_seconds="0"+remaining_seconds;
+	return hours_floor+":"+minutes_floor+":"+remaining_seconds;
+}
