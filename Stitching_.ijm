@@ -260,14 +260,18 @@ for (i=0; i<nWells; i++) {
 		//run("Set Measurements...", "shape stack redirect=None decimal=2");
 		//run("Analyze Particles...", "display clear record");
 		//run("Classify Particles", "class[1]=AR operator[1]=<= value[1]=1.5 class[2]=Solidity operator[2]=>= value[2]=0.9 class[3]=Circ. operator[3]=>= value[3]=0.8 class[4]=-empty- operator[4]=-empty- value[4]=0.0000 combine=[AND (match all)] output=[Keep members] white");
-		//rename("Final_mask");
 		
-		//measure
+		// measure
 		print("Quantification");
 		run("Set Measurements...", "area centroid shape redirect=None decimal=2");
-		//selectImage("Final_mask");
 		run("Set Scale...", "distance="+1/distance+" known=1 pixel=1 unit="+unit);
 		run("Analyze Particles...", "size=0-Infinity show=Masks display add clear");
+		// save rois
+		roiCount=roiManager("count");
+		for (j=0; j<roiCount; j++) {
+			roiManager("select", j);
+			roiManager("rename", j+1);
+		}
 		roiManager("Save", rawStitchingOutput+File.separator+wellName[i]+"_roi.zip");
 		roiManager("deselect");
 		roiManager("delete");
@@ -292,14 +296,7 @@ for (i=0; i<nWells; i++) {
 			print(f, wellName[i] + "\t" + j+1 + "\t" + areaArray[j] + "\t" + circArray[j] + "\t" + arArray[j] + "\t" + roundArray[j] + "\t" + solidityArray[j] + "\t" + xArray[j] + "\t" +yArray[j]);
 		}
 		
-		//save
-		roiCount=roiManager("count");
-		for (j=0; j<roiCount; j++) {
-			roiManager("select", j);
-			roiManager("rename", j+1);
-		}
-		
-		//clean up
+		// clean up
 		run("Close All");
 		run("Clear Results");
 	}
@@ -311,7 +308,7 @@ print("\\Update1:Elapsed time "+hours_minutes_seconds(elapsed_Stitching));
 print("\\Update2:");
 print("\\Update3:");
 
-//delete merged directory
+// delete merged directory
 print("\\Update3:Deleting temporary files");
 listMerged=getFileList(outputMerged);
 for (i=0; i<listMerged.length; i++) {
@@ -319,13 +316,33 @@ for (i=0; i<listMerged.length; i++) {
 }
 File.delete(outputMerged);
 
+// date & time
+getDateAndTime(year, month, dayOfWeek, dayOfMonth, hour, minute, second, msec);
+dayOfMonth=d2s(dayOfMonth, 0);
+while (lengthOf(dayOfMonth) < 2) {
+	dayOfMonth="0"+dayOfMonth;
+}
+month+=1;
+month=d2s(month, 0);
+while (lengthOf(month) < 2) {
+	month="0"+month;
+}
+hour=d2s(hour, 0);
+while (lengthOf(hour) < 2) {
+	hour="0"+hour;
+}
+minute=d2s(minute, 0);
+while (lengthOf(minute) < 2) {
+	minute="0"+minute;
+}
+
 //save results table
 print("\\Update3:Saving results");
 selectWindow("Project_Results_Table");
-saveAs("Text", rawStitchingOutput+File.separator+"Project_Results_Table_cambiar.csv");
+saveAs("Text", rawStitchingOutput+File.separator+"ResultsTable_"+dayOfMonth+month+year+hour+minute+".csv");
 run("Close");
 
-//final clean up
+// clean up
 print("\\Clear");
 print("Stitching performed successfully");
 selectWindow("Results");
@@ -339,6 +356,9 @@ print("End of process");
 print("Pixel Classification elapsed time "+hours_minutes_seconds(elapsed_PixClas));
 print("Stitching elapsed time "+hours_minutes_seconds(elapsed_Stitching));
 print("Total elapsed time "+hours_minutes_seconds(elapsed_total));
+print(" ");
+print("Date (DD/MM/YY)     "+ dayOfMonth+"/"+month+"/"+year);
+print("Time (24h clock)       " + hour+":"+minute);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
