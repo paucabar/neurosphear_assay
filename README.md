@@ -34,7 +34,7 @@ How to [follow an update site](https://imagej.net/Following_an_update_site) in F
 
 ## Test Dataset
 
-Download an example [image dataset](https://drive.google.com/drive/folders/1W_UDxg4mbQ1qNeZo1tPUezNgmZxtMwkv?usp=sharing) and some [ilastik classifiers](https://drive.google.com/drive/folders/1mgT7NOzUn5zvgJp47WbMRDCNR9f6efXg?usp=sharing) which have been trained using the same subset of images and user annotations but different sets of features.
+Download an example [image dataset](https://drive.google.com/drive/folders/1W_UDxg4mbQ1qNeZo1tPUezNgmZxtMwkv?usp=sharing) and some [ilastik classifiers](https://drive.google.com/drive/folders/1mgT7NOzUn5zvgJp47WbMRDCNR9f6efXg?usp=sharing) which have been trained using the same subset of images and user annotations but different sets of features. Please note that the image dataset includes a TXT file containing some technical specifications, which are crucial to set the macro parameters. Additionally, along with the ilastik classifiers, another TXT file provides major information regarding their technical specifications, as well as their performance, in order to guide the user when picking up one for the analysis.
 
 ## Usage
 
