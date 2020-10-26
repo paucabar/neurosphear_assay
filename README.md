@@ -42,14 +42,16 @@ Download an example [image dataset](https://drive.google.com/drive/folders/1W_UD
 
 1. Run the **Illumination Correction** macro (<code>Plugins > NeuroMol Lab > Neurosphere Assay > Illumination Correction</code>)
 2. Select the directory containing the images (TIF files)
-3. Select the illumination correction mode. Note that the **prospective** method will ask for an additional folder containing the reference images to apply the correction function. Conversely, the **retrospective multi-image** method dos not require reference images, but it needs a medium-size dataset in order to perform properly (>25-30 wells) 
+3. Select the illumination correction mode. The **retrospective multi-image** method is the easiest to apply, since it does not require reference images. However, since this method calculates the illumination correction from the image datset, it requires a medium-size dataset in order to perform a proper estimation (>25-30 wells). Alternatively, the **prospective** method uses reference images, e.g., images acquired on plates without any specimen, just the background. Note that this method will ask for an additional folder containing the reference images to apply the correction function. 
 4. Run
-5. Corrected images  images will be saved in a new subfolder within the original directory
+5. Corrected images will be saved as H5 files in a new subfolder (named adding the tag _corrected_) within the original directory, whereas illumination functions will be saved as TIF files in a different subfolder (named adding the tag _flat-field_).
 
 ### Pixel Classification: training a new classifier within ilastik (optional)
 
+Explicar perquè és opcional i quan és necesari
+
 1. Start a pixel classification project in ilastik
-2. Load some corrected images (HDF5 files). Try to use images with different appearence, from several field-of-view positions and wells
+2. Load some corrected images (H5 files). Try to use images with different appearence, from several field-of-view positions and wells
 3. Select some features (you can start by selecting all of them)
 4. Annotate the images. Note that label 1 must correspond to _background_, label 2 to _neurospheres_ and label 3 to _well edges_
 5. If it takes too much time to perform the classification, ilastik includes implemented algorithms to keep the major features (look at the features applet)
@@ -61,8 +63,8 @@ Learn more about the ilastik [pixel classification workflow](https://www.ilastik
 ### Pixel Classification & Stitching
 
 1. Run the **Pixel Classification & Stitching** macro (<code>Plugins > NeuroMol Lab > Neurosphere Assay > Pixel Classification & Stitching</code>)
-2. Select the directory containing the images (TIF files)
-3. Load the pixel classification project
+2. Select the directory containing the corrected images (H5 files)
+3. Load the ilastik pixel classifier (ILP file)
 4. Select the stitching mode. Note that it depends on the image acquisition parameters. Also note that the macro assumes an overlapping of 15 %
 5. Adjust some workflow parameters (mean, threshold, open iterations). Know more about the parameters of the workflow on the **wiki page (not yet)**
 6. Run. Note that the stitching workflow may take several hours, depending on the dataset size
