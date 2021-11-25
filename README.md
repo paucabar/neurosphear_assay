@@ -26,7 +26,7 @@ How to [follow an update site](https://imagej.net/Following_an_update_site) in F
 4. Click on <code>Add update site</code>
 5. A new blank row is to be created at the bottom of the update sites list
 6. Type **NeuroMol Lab** in the **Name** column
-7. Type **http://sites.imagej.net/Paucabar/** in the **URL** column
+7. Type **https://sites.imagej.net/NeuroMol-Lab/** in the **URL** column
 8. <code>Close</code> the update sites window
 9. <code>Apply changes</code>
 10. Restart Fiji
@@ -40,15 +40,13 @@ Download an example [image dataset](https://drive.google.com/drive/folders/1W_UD
 
 ### Illumination Correction (NFA)
 
-1. Run the **Illumination Correction** macro (<code>Plugins > NeuroMol Lab > Neurosphere Assay > Illumination Correction</code>)
+1. Run the **Illumination Correction** macro (<code>Plugins > NeuroMol-Lab > Neurosphere Assay > Illumination Correction</code>)
 2. Select the directory containing the images (TIF files)
 3. Select the illumination correction mode. The **retrospective multi-image** method is the easiest to apply, since it does not require reference images. However, since this method calculates the illumination correction from the image datset, it requires a medium-size dataset in order to perform a proper estimation (>25-30 wells). Alternatively, the **prospective** method uses reference images, e.g., images acquired on plates without any specimen, just the background. Note that this method will ask for an additional folder containing the reference images to apply the correction function. 
 4. Run
 5. Corrected images will be saved as H5 files in a new subfolder (named adding the tag _corrected_) within the original directory, whereas illumination functions will be saved as TIF files in a different subfolder (named adding the tag _flat-field_).
 
 ### Pixel Classification: training a new classifier within ilastik (optional)
-
-Explicar perquè és opcional i quan és necesari
 
 1. Start a pixel classification project in ilastik
 2. Load some corrected images (H5 files). Try to use images with different appearence, from several field-of-view positions and wells
@@ -62,7 +60,7 @@ Learn more about the ilastik [pixel classification workflow](https://www.ilastik
 
 ### Pixel Classification & Stitching
 
-1. Run the **Pixel Classification & Stitching** macro (<code>Plugins > NeuroMol Lab > Neurosphere Assay > Pixel Classification & Stitching</code>)
+1. Run the **Pixel Classification & Stitching** macro (<code>Plugins > NeuroMol-Lab > Neurosphere Assay > Pixel Classification & Stitching</code>)
 2. Select the directory containing the corrected images (H5 files)
 3. Load the ilastik pixel classifier (ILP file)
 4. Select the stitching mode. Note that it depends on the image acquisition parameters. Also note that the macro assumes an overlapping of 15 %
@@ -74,7 +72,7 @@ Learn more about the ilastik [pixel classification workflow](https://www.ilastik
 
 Since the **Pixel Classification & Stitching** macro requiures a significative amount of computational time (which is mainly due to the pixel classification and, to a lesser extent, the stitching step), the **Segmentation** macro enables to reset the segmentation parameters and quickly test them on the already stitched probability maps.
 
-1. Run the **Segmentation** macro (<code>Plugins > NeuroMol Lab > Neurosphere Assay > Segmentation</code>)
+1. Run the **Segmentation** macro (<code>Plugins > NeuroMol-Lab > Neurosphere Assay > Segmentation</code>)
 2. Select the directory containing the stitching output (a folder tagged with the postfix _corrected_stitched_). The folder must contain two subfolders: _Pixel_Prediction_Map_ and _Raw_Data_. Please note that the TIF files stored on both subfolders should never be reallocated or modified in any way in order to be reused with the **Segmentation** macro.
 3. Adjust some workflow parameters (mean, threshold, open iterations). Know more about the parameters of the workflow on the **wiki page (not yet)**
 4. Run
