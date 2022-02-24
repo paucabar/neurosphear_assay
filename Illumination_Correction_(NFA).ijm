@@ -1,6 +1,7 @@
 //script parameters
 #@ File(label="Directory", style="directory") dir
 #@ String(label="Method", choices={"Retrospective multi-modal", "Prospective"}, style="radioButtonVertical") method
+#@ String(label="Export", choices={"HDF5", "TIF"}, style="radioButtonHorizontal") export
 #@ String (label=" ", value="<html><img src=\"https://live.staticflickr.com/65535/48557333566_d2a51be746_o.png\"></html>", visibility=MESSAGE, persist=false) logo
 #@ String (label=" ", value="<html><font size=2><b>Neuromolecular Biology Laboratory</b><br>ERI BIOTECMED - Universitat de València (Spain)</font></html>", visibility=MESSAGE, persist=false) message
 
@@ -120,7 +121,11 @@ for (i=0; i<nWells; i++) {
 		}
 		imageCalculator("Divide create", fieldOfWiewImage+".tif", flatFieldImage+".tif");
 		rename("corrected");
-		run("Export HDF5", "select=["+outputCorrected+File.separator+fieldOfWiewImage+".h5] exportpath=["+outputCorrected+File.separator+fieldOfWiewImage+".h5] datasetname=data compressionlevel=0 input=[corrected]");
+		if (export == "HDF5") {
+			run("Export HDF5", "select=["+outputCorrected+File.separator+fieldOfWiewImage+".h5] exportpath=["+outputCorrected+File.separator+fieldOfWiewImage+".h5] datasetname=data compressionlevel=0 input=[corrected]");
+		} else {
+			saveAs("tif", outputCorrected+File.separator+fieldOfWiewImage);
+		}		
 		run("Close All");
 	}
 }
