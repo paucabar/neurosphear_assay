@@ -2,6 +2,7 @@
 #@ File(label="Directory", style="directory") dir
 #@ String(label="Type", choices={"Grid: row-by-row", "Grid: snake by rows"}, style="radioButtonVertical") type
 #@ Integer (label="Tile overlap (%)", value=15) overlap
+#@ boolean (label="Normalise", value=true, persist=true) normalise
 #@ String (label=" ", value="<html><img src=\"https://live.staticflickr.com/65535/48557333566_d2a51be746_o.png\"></html>", visibility=MESSAGE, persist=false) logo
 #@ String (label=" ", value="<html><font size=2><b>Neuromolecular Biology Lab</b><br>ERI BIOTECMED - Universitat de València (Spain)</font></html>", visibility=MESSAGE, persist=false) message
 
@@ -9,7 +10,7 @@
 original=File.getName(dir);
 list=getFileList(dir);
 Array.sort(list);
-output=File.getParent(dir)+File.separator+original+"_stitched";
+output=File.getParent(dir)+File.separator+original+"_stitched_NoIlluCor";
 File.makeDirectory(output);
 
 // count the number of TIF files
@@ -61,8 +62,14 @@ for (i=0; i<nWells; i++) {
 setBatchMode(true);
 for (i=0; i<nWells; i++) {
 	run("Grid/Collection stitching", "type=["+type+"] order=[Right & Down                ] grid_size_x=5 grid_size_y=5 tile_overlap="+overlap+" first_file_index_i=1 directory=["+dir+"] file_names=["+wellName[i]+"(fld {ii}).tif] output_textfile_name=TileConfiguration.txt fusion_method=[Linear Blending] regression_threshold=0.30 max/avg_displacement_threshold=2.50 absolute_displacement_threshold=3.50 compute_overlap computation_parameters=[Save memory (but be slower)] image_output=[Fuse and display]");
+	if (normalise) {
+		run("32-bit");
+		run("Enhance Contrast...", "saturated=0.3 normalize");
+	}
 	saveAs("tif", output+File.separator+wellName[i]);
 	close();
 }
 print("\\Clear");
-print("Ya está");
+print("STITCHING PERFORMED SUCCESSFULLY");
+
+setBatchMode(false);
